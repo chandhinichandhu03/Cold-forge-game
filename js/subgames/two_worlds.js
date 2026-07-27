@@ -113,31 +113,11 @@ class ChroniclesOfTwoWorlds {
   triggerObstacleSpeechModal(item) {
     // Permanent Heart Emoji Authentication Logic (Item 3)
     if (item.isHeartObstacle) {
-      const pin = prompt("🔐 PERMANENT HEART SECURITY AUTHENTICATION:\nPlease enter the 6-digit Security PIN:");
-      if (pin !== '030708') {
-        alert("⚠️ ACCESS DENIED! Invalid Security PIN.");
-        return;
-      }
-
-      const password = prompt("🔑 ENTER PASSWORD:\nPlease enter the Password:");
-      if (password !== 'Chandhini') {
-        alert("⚠️ ACCESS DENIED! Invalid Password.");
-        return;
-      }
-
-      // Authentication Success!
-      this.loveCelebrationActive = true;
-      this.spawnHeartBubbles();
-
-      this.logConsole("💖 AUTHENTICATION SUCCESSFUL!");
-
-      // Speak Voice Speech after EXACTLY 2 SECONDS (Request 2)
-      setTimeout(() => {
-        if (window.GAMETHON.VoiceEngine) {
-          window.GAMETHON.VoiceEngine.speak("I LOVE YOU CHANDHINI");
-        }
-      }, 2000);
-
+      window.GAMETHON.authenticateHeartObstacle(() => {
+        this.loveCelebrationActive = true;
+        this.spawnHeartBubbles();
+        this.logConsole("💖 AUTHENTICATION SUCCESSFUL!");
+      });
       return;
     }
 
@@ -272,7 +252,7 @@ class ChroniclesOfTwoWorlds {
         const my = e.clientY - rect.top;
 
         this.items.forEach(item => {
-          if (Math.hypot(mx - item.x, my - item.y) < 40) {
+          if (!item.isHeartObstacle && Math.hypot(mx - item.x, my - item.y) < 40) {
             this.triggerObstacleSpeechModal(item);
           }
         });
@@ -287,6 +267,13 @@ class ChroniclesOfTwoWorlds {
       if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') this.player.y = Math.min(360, this.player.y + speed);
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') this.player.y = Math.max(20, this.player.y - speed);
 
+      if (e.key === 'f' || e.key === 'F') {
+        const heart = this.items.find(i => i.isHeartObstacle);
+        if (heart && Math.hypot(this.player.x - heart.x, this.player.y - heart.y) < 60) {
+          this.triggerObstacleSpeechModal(heart);
+        }
+      }
+
       if (e.key === 'Enter') {
         this.openEnterBuilderPrompt();
       }
@@ -299,7 +286,7 @@ class ChroniclesOfTwoWorlds {
     if (!this.isPaused) {
       this.items.forEach(item => {
         const dist = Math.hypot(this.player.x - item.x, this.player.y - item.y);
-        if (dist < 45 && this.lastSpokenObstacleId !== item.id) {
+        if (!item.isHeartObstacle && dist < 45 && this.lastSpokenObstacleId !== item.id) {
           this.lastSpokenObstacleId = item.id;
           this.triggerObstacleSpeechModal(item);
         }
@@ -320,6 +307,11 @@ class ChroniclesOfTwoWorlds {
       this.items.forEach(item => {
         const icon = this.viewWorld === 'Real' ? item.real.split(' ')[0] : item.imaginary.split(' ')[0];
         ctx.fillText(icon, item.x, item.y);
+        if (item.isHeartObstacle && Math.hypot(this.player.x - item.x, this.player.y - item.y) < 60) {
+          ctx.font = 'bold 12px Orbitron'; ctx.fillStyle = '#ff0077';
+          ctx.fillText("PRESS 'F' FOR PIN AUTH 🔐", item.x - 65, item.y - 45);
+          ctx.font = '32px sans-serif';
+        }
       });
 
       ctx.fillText(this.player.avatar, this.player.x, this.player.y);

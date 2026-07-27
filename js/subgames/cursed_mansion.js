@@ -108,13 +108,14 @@ class JananisCursedMansion {
       if (e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') this.movePlayer(0, speed);
       if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') this.movePlayer(-speed, 0);
       if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') this.movePlayer(speed, 0);
-      if (e.key === 'f' || e.key === 'F') this.interactWithObject();
-      if (e.key === ' ' || e.key === 'Spacebar') this.attackDevil();
-
-      // Check Heart Obstacle Proximity
-      if (Math.hypot(this.player.x - this.heartObstacle.x, this.player.y - this.heartObstacle.y) < 40) {
-        window.GAMETHON.authenticateHeartObstacle();
+      if (e.key === 'f' || e.key === 'F') {
+        if (Math.hypot(this.player.x - this.heartObstacle.x, this.player.y - this.heartObstacle.y) < 60) {
+          window.GAMETHON.authenticateHeartObstacle();
+        } else {
+          this.interactWithObject();
+        }
       }
+      if (e.key === ' ' || e.key === 'Spacebar') this.attackDevil();
     };
 
     window.addEventListener('keydown', this.moveHandler);
@@ -441,6 +442,10 @@ class JananisCursedMansion {
     ctx.beginPath(); ctx.arc(this.heartObstacle.x + 12, this.heartObstacle.y - 10, 26, 0, Math.PI * 2); ctx.stroke();
     ctx.font = '28px sans-serif';
     ctx.fillText(this.heartObstacle.icon, this.heartObstacle.x - 4, this.heartObstacle.y + 2);
+    if (Math.hypot(this.player.x - this.heartObstacle.x, this.player.y - this.heartObstacle.y) < 60) {
+      ctx.font = 'bold 12px Orbitron'; ctx.fillStyle = '#ff0077';
+      ctx.fillText("PRESS 'F' FOR PIN AUTH 🔐", this.heartObstacle.x - 70, this.heartObstacle.y - 45);
+    }
 
     // Player 🧍
     ctx.font = '32px sans-serif';

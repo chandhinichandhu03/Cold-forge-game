@@ -56,11 +56,6 @@ class ProjectARES {
     if (window.GAMETHON.launchedFromMaze) {
       this.reset30sMazeInactivityTimer();
     }
-
-    // Check Heart Obstacle Proximity
-    if (Math.hypot(this.player.x - 480, this.player.y - 240) < 40) {
-      window.GAMETHON.authenticateHeartObstacle();
-    }
   }
 
   setupListeners() {
@@ -70,11 +65,7 @@ class ProjectARES {
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
 
-        // Center Heart Obstacle Auth Click (Item 2)
-        if (Math.hypot(mx - 480, my - 240) < 45) {
-          window.GAMETHON.authenticateHeartObstacle();
-          return;
-        }
+
 
         if (this.isRunning && !this.isPaused && this.playerHp > 0) {
           this.shoot();
@@ -90,6 +81,11 @@ class ProjectARES {
       if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') this.movePlayer(-speed, 0);
       if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') this.movePlayer(speed, 0);
       if (e.key === 'r' || e.key === 'R') this.reloadAmmo();
+      if (e.key === 'f' || e.key === 'F') {
+        if (Math.hypot(this.player.x - 480, this.player.y - 230) < 60) {
+          window.GAMETHON.authenticateHeartObstacle();
+        }
+      }
 
       if (e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault();
@@ -584,6 +580,10 @@ class ProjectARES {
     ctx.beginPath(); ctx.arc(480, 230, 28, 0, Math.PI * 2); ctx.stroke();
     ctx.font = '32px sans-serif';
     ctx.fillText('💖', 464, 242);
+    if (Math.hypot(this.player.x - 480, this.player.y - 230) < 60) {
+      ctx.font = 'bold 12px Orbitron'; ctx.fillStyle = '#ff0077';
+      ctx.fillText("PRESS 'F' FOR PIN AUTH 🔐", 385, 195);
+    }
 
     ctx.fillStyle = '#ffea00';
     this.bullets.forEach(b => {

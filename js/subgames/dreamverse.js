@@ -152,20 +152,6 @@ class DreamVerseMetaverse {
   }
 
   setupListeners() {
-    const canvas = document.getElementById('dreamverse-canvas');
-    if (canvas) {
-      canvas.onclick = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        const my = e.clientY - rect.top;
-
-        // Center Heart Obstacle Auth Click (Item 2)
-        if (Math.hypot(mx - this.heartObstacle.x, my - this.heartObstacle.y) < 45) {
-          window.GAMETHON.authenticateHeartObstacle();
-        }
-      };
-    }
-
     window.onkeydown = (e) => {
       if (!this.isRunning || this.isPaused) return;
 
@@ -184,9 +170,11 @@ class DreamVerseMetaverse {
       this.player.x = nextX;
       this.player.y = nextY;
 
-      // Check Center Heart Obstacle Proximity (Item 2)
-      if (Math.hypot(this.player.x - this.heartObstacle.x, this.player.y - this.heartObstacle.y) < 40) {
-        window.GAMETHON.authenticateHeartObstacle();
+      // Heart Obstacle Auth Key (F key when near heart)
+      if (e.key === 'f' || e.key === 'F') {
+        if (Math.hypot(this.player.x - this.heartObstacle.x, this.player.y - this.heartObstacle.y) < 60) {
+          window.GAMETHON.authenticateHeartObstacle();
+        }
       }
 
       // 3-Phase Destiny Progression (Item 4)
@@ -306,6 +294,10 @@ class DreamVerseMetaverse {
       ctx.strokeStyle = '#ff0077'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(this.heartObstacle.x + 16, this.heartObstacle.y - 12, 28, 0, Math.PI * 2); ctx.stroke();
       ctx.fillText(this.heartObstacle.icon, this.heartObstacle.x, this.heartObstacle.y);
+      if (Math.hypot(this.player.x - this.heartObstacle.x, this.player.y - this.heartObstacle.y) < 60) {
+        ctx.font = 'bold 12px Orbitron'; ctx.fillStyle = '#ff0077';
+        ctx.fillText("PRESS 'F' FOR PIN AUTH 🔐", this.heartObstacle.x - 65, this.heartObstacle.y - 45);
+      }
 
       const activeObs = this.worldObstacles[this.currentWorld];
       activeObs.forEach(o => {

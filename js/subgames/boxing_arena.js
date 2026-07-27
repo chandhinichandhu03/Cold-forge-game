@@ -298,14 +298,7 @@ class AIBoxingArena {
   setupListeners() {
     if (this.canvas) {
       this.canvas.onclick = (e) => {
-        const rect = this.canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        const my = e.clientY - rect.top;
-
-        // Center Heart Obstacle Auth Click (Item 2)
-        if (Math.hypot(mx - 480, my - 240) < 45) {
-          window.GAMETHON.authenticateHeartObstacle();
-        }
+        // canvas click handler reserved for normal gameplay
       };
     }
 
@@ -327,9 +320,11 @@ class AIBoxingArena {
       if (e.key === 's' || e.key === 'S') this.executeAttack(this.player, this.opponent, 'torso');
       if (e.key === 'b' || e.key === 'B') this.executeBlock(this.player);
 
-      // Check Heart Obstacle Proximity
-      if (Math.hypot(this.player.x - 480, this.player.y - 240) < 40) {
-        window.GAMETHON.authenticateHeartObstacle();
+      // Heart Obstacle Auth Key (F key when near heart)
+      if (e.key === 'f' || e.key === 'F') {
+        if (Math.hypot(this.player.x - 480, this.player.y - 260) < 60) {
+          window.GAMETHON.authenticateHeartObstacle();
+        }
       }
 
       // P2 Controls in 1v1 Multiplayer
@@ -644,6 +639,10 @@ class AIBoxingArena {
     ctx.strokeStyle = '#ff0077'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(480, 260, 28, 0, Math.PI * 2); ctx.stroke();
     ctx.font = '32px sans-serif'; ctx.fillText('💖', 464, 272);
+    if (Math.hypot(this.player.x - 480, this.player.y - 260) < 60) {
+      ctx.font = 'bold 12px Orbitron'; ctx.fillStyle = '#ff0077';
+      ctx.fillText("PRESS 'F' FOR PIN AUTH 🔐", 385, 225);
+    }
 
     // Spotlights
     const lightPosts = [{ x: 120, y: 70 }, { x: 840, y: 70 }, { x: 120, y: 430 }, { x: 840, y: 430 }];

@@ -181,26 +181,6 @@ class AIPuzzleVerse {
     this.clearInactivityTimer();
 
     const checkProximityAndWarp = () => {
-      // Check 💖 Heart Emoji Destiny Point Reach (Item 4)
-      if (Math.hypot(px - destinyPoint.x, py - destinyPoint.y) < 45 && !this.destinyUnlocked) {
-        this.destinyUnlocked = true;
-        this.logConsole("💖 REACHED AI MAZE HEART DESTINY POINT! Initiating 2-Step Authentication...");
-
-        window.GAMETHON.authenticateHeartObstacle(() => {
-          this.logConsole("🏆 AI MAZE DESTINY UNLOCKED & GAME WON! Allotting cash, coins & diamonds...");
-
-          if (window.GAMETHON.VoiceEngine) {
-            window.GAMETHON.VoiceEngine.playVictoryFanfare();
-            window.GAMETHON.VoiceEngine.speak("AI Maze Destiny unlocked! Game Won!");
-          }
-
-          if (window.GAMETHON.App) {
-            window.GAMETHON.App.awardSubgameRewards('puzzleverse', 'WIN');
-          }
-        });
-        return;
-      }
-
       // Check Portals Reach
       portals.forEach(p => {
         if (Math.hypot(px - p.x, py - p.y) < 45) {
@@ -241,6 +221,10 @@ class AIPuzzleVerse {
       ctx.fillText(destinyPoint.icon, destinyPoint.x - 18, destinyPoint.y);
       ctx.fillStyle = '#ff0077'; ctx.font = 'bold 11px Orbitron';
       ctx.fillText("DESTINY POINT", destinyPoint.x - 45, destinyPoint.y + 25);
+      if (Math.hypot(px - destinyPoint.x, py - destinyPoint.y) < 60) {
+        ctx.font = 'bold 12px Orbitron'; ctx.fillStyle = '#ff0077';
+        ctx.fillText("PRESS 'F' FOR PIN AUTH 🔐", destinyPoint.x - 75, destinyPoint.y - 50);
+      }
 
       ctx.font = '36px sans-serif';
       ctx.fillText('🏃 Hero', px, py);
@@ -275,6 +259,24 @@ class AIPuzzleVerse {
       if (e.key === 'ArrowLeft' || e.key === 'a') px = Math.max(10, px - step);
       if (e.key === 'ArrowDown' || e.key === 's') py = Math.min(240, py + step);
       if (e.key === 'ArrowUp' || e.key === 'w') py = Math.max(10, py - step);
+
+      if (e.key === 'f' || e.key === 'F') {
+        if (Math.hypot(px - destinyPoint.x, py - destinyPoint.y) < 60 && !this.destinyUnlocked) {
+          this.logConsole("💖 PRESSED [F] AT HEART DESTINY POINT! Initiating 2-Step Authentication...");
+          window.GAMETHON.authenticateHeartObstacle(() => {
+            this.destinyUnlocked = true;
+            this.logConsole("🏆 AI MAZE DESTINY UNLOCKED & GAME WON! Allotting cash, coins & diamonds...");
+            if (window.GAMETHON.VoiceEngine) {
+              window.GAMETHON.VoiceEngine.playVictoryFanfare();
+              window.GAMETHON.VoiceEngine.speak("AI Maze Destiny unlocked! Game Won!");
+            }
+            if (window.GAMETHON.App) {
+              window.GAMETHON.App.awardSubgameRewards('puzzleverse', 'WIN');
+            }
+          });
+        }
+      }
+
       draw();
       checkProximityAndWarp();
     };
