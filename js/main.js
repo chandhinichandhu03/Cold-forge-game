@@ -17,8 +17,6 @@ window.GAMETHON.authenticateHeartObstacle = function(onSuccessCallback) {
     return false;
   }
 
-  alert("💖 AUTHENTICATION GRANTED! 💖");
-
   // Speak Voice Speech after EXACTLY 2 SECONDS (Request 2)
   setTimeout(() => {
     if (window.GAMETHON.VoiceEngine) {

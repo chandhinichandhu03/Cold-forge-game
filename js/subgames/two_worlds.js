@@ -131,8 +131,6 @@ class ChroniclesOfTwoWorlds {
 
       this.logConsole("💖 AUTHENTICATION SUCCESSFUL!");
 
-      alert("💖 AUTHENTICATION GRANTED! 💖");
-
       // Speak Voice Speech after EXACTLY 2 SECONDS (Request 2)
       setTimeout(() => {
         if (window.GAMETHON.VoiceEngine) {
