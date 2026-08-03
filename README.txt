@@ -93,3 +93,9 @@ MyGame.zip / ColdForgeGames.zip
 │       └── two_worlds.js
 └── Assets/
 ========================================================================
+
+
+
+
+run code in terminal 
+
